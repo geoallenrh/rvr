@@ -1,0 +1,5 @@
+[[{"parameters":{"ApiVersion":"2010-04-01", "SmsSid":"SM9502d827b23cd1e6128cc2ca60576ffb", "SmsStatus":"received", "SmsMessageSid":"SM9502d827b23cd1e6128cc2ca60576ffb", "NumSegments":"1", "From":"+14173802843", "ToState":"NJ", "MessageSid":"SM9502d827b23cd1e6128cc2ca60576ffb", "AccountSid":"ACf5945ec5d9e7cfe500893a264097d8e2", "ToZip":"07930", "FromCountry":"US", "ToCity":"HACKENSACK", "FromCity":"SPRINGFIELD", "To":"+12015844158", "FromZip":"65806", "Body":"Red", "ToCountry":"US", "FromState":"MO", "NumMedia":"0"}}]]
+
+
+
+{"ApiVersion":"2010-04-01", "SmsSid":"SM9502d827b23cd1e6128cc2ca60576ffb", "SmsStatus":"received", "SmsMessageSid":"SM9502d827b23cd1e6128cc2ca60576ffb", "NumSegments":"1", "From":"+14173802843", "ToState":"NJ", "MessageSid":"SM9502d827b23cd1e6128cc2ca60576ffb", "AccountSid":"ACf5945ec5d9e7cfe500893a264097d8e2", "ToZip":"07930", "FromCountry":"US", "ToCity":"HACKENSACK", "FromCity":"SPRINGFIELD", "To":"+12015844158", "FromZip":"65806", "Body":"Red", "ToCountry":"US", "FromState":"MO", "NumMedia":"0"}
