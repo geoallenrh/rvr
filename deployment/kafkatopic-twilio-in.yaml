@@ -1,0 +1,13 @@
+﻿apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaTopic
+metadata:
+  name: twilio-in
+  labels:
+    strimzi.io/cluster: rvr-cluster
+  namespace: rvr
+spec:
+  partitions: 10
+  replicas: 3
+  config:
+    retention.ms: 604800000
+    segment.bytes: 1073741824

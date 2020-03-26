@@ -1,0 +1,12 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: kafdrop
+  namespace: rvr
+spec:
+  path: /
+  to:
+    kind: Service
+    name: kafdrop
+  port:
+    targetPort: 9000

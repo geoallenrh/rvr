@@ -1,0 +1,15 @@
+﻿kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: kafka-bridge-route
+  namespace: rvr
+spec:
+  host: ''
+  subdomain: ''
+  to:
+    kind: Service
+    name: rvr-kafka-bridge-bridge-service
+    weight: 100
+  port:
+    targetPort: rest-api
+
