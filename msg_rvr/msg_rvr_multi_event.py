@@ -9,12 +9,14 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'
 
 from sphero_sdk import SpheroRvrObserver
 from sphero_sdk import Colors
+from sphero_sdk import DriveFlagsBitmask
 
 rvr = SpheroRvrObserver()
 
 
 
-hostname ='http://kafka-bridge-route-rvr.apps.cluster-avaya-fb13.avaya-fb13.example.opentlc.com'
+
+hostname ='http://kafka-bridge-route-rvr.apps.cluster-orielly-6809.orielly-6809.sandbox661.opentlc.com'
 url = hostname + '/consumers/rvr-group/instances/rvr-consumer/records'
 headers = {'accept': 'application/vnd.kafka.json.v2+json'}
 process_messages = True
@@ -39,9 +41,8 @@ def get_messages():
         else:
             time.sleep(5)
             continue
-        bnrkffffbuglgiulvuj
         
-
+        
 def process_command(cmd):
     rvr_cmd = cmd
     rvr.wake()
@@ -49,14 +50,25 @@ def process_command(cmd):
     if (rvr_cmd == "drive"):
         time.sleep(2)
 
-        rvr.drive_control.reset_heading()
+        rvr.reset_yaw()
 
-        rvr.drive_control.roll_start(
-        speed=25,
-        heading=90
+        rvr.drive_with_heading(
+            speed=128,  # Valid speed values are 0-255
+            heading=0,  # Valid heading values are 0-359
+            flags=DriveFlagsBitmask.none.value
         )
 
-        rvr.drive_control.roll_stop(heading=270)
+        # Delay to allow RVR to drive
+        time.sleep(1)
+
+        rvr.drive_with_heading(
+            speed=128,  # Valid speed values are 0-255
+            heading=0,  # Valid heading values are 0-359
+            flags=DriveFlagsBitmask.drive_reverse.value
+        )
+
+        # Delay to allow RVR to drive
+        time.sleep(1)
 
     else:
         colorValue = (Colors[rvr_cmd])
