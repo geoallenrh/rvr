@@ -19,6 +19,9 @@ import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import io.smallrye.reactive.messaging.kafka.KafkaMessage;
 import kafka.utils.json.JsonObject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.std.ObjectArraySerializer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,18 +47,21 @@ public class MessageResource {
   @Inject
     Vertx vertx;
 
+  @Inject
+    ObjectMapper objectMapper;
+
   @ConfigProperty(name = "kafka.bootstrap.servers")
     String kafkaBootstrapServer;
 
-    private KafkaProducer<String, TwilioMessage> producer;
+    private KafkaProducer<String, String> producer;
 
 
   @PostConstruct
     void initKafkaClient() {
         Map<String, String> config = new HashMap<>();
         config.put("bootstrap.servers", kafkaBootstrapServer);
-        config.put("key.serializer", "io.vertx.kafka.client.serialization.JsonObjectSerializer");
-        config.put("value.serializer", "io.vertx.kafka.client.serialization.JsonObjectSerializer");
+        config.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        config.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         System.out.println("bootstrapping Kafka with config: " + config);
 
         producer = KafkaProducer.create(vertx, config);
@@ -79,11 +85,16 @@ public class MessageResource {
 
 
     public void sendMessageToKafka(TwilioMessage twilioMessage) {
+      
       try {
-          KafkaProducerRecord<String, TwilioMessage> record = KafkaProducerRecord.create("twilio-in",twilioMessage.getMessageSid(), twilioMessage);
+         String jsonMessage = objectMapper.writeValueAsString(twilioMessage);
+         String jsonKey = objectMapper.writeValueAsString(twilioMessage.getMessageSid());
+         System.out.println("Message:" + jsonMessage);
+         System.out.println("Key: " + jsonKey);
+          KafkaProducerRecord<String, String> record = KafkaProducerRecord.create("twilio-in",jsonKey, jsonMessage);
           producer.write(record, done -> System.out.println("Kafka message sent: twilio message - " + twilioMessage.getBody()));
       } catch (Exception e) {
-          // allow to run this functionality if Kafka hasn't been set up
+          e.printStackTrace();
       }
   }
   
