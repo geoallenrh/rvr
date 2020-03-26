@@ -31,12 +31,12 @@ oc apply -f <filename>
     
 Define Kafka Cluster
     kafka-rvr-cluster.yaml 
-    ** Should configuration allow dynamic topics?
+    Should configuration allow dynamic topics?
 
 Topic(s)
     kafkatopic-twilio-in.yaml
     kafkatopic-rvr-telemetry.yaml
-    ** What is guidance/best practice? Sould this be dynamic?
+    What is guidance/best practice? Should this be dynamic?
 
 Kafka Bridge
     kafkabridge-rvr-kafka-bridge.yaml
