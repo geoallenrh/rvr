@@ -27,28 +27,28 @@ Install AMQ Streams Operator/Subscription in rvr project
 
 oc apply -f <filename>
 
-** I have been installating the Operator manually. Need to figure out the correct YAML for the Operator
+*I have been installaing the Operator manually. Need to figure out the correct YAML for the Operator subscription *
     
-Define Kafka Cluster
+### Create Kafka Cluster
     kafka-rvr-cluster.yaml 
     Should configuration allow dynamic topics?
 
-Topic(s)
+### Create Topic(s)
     kafkatopic-twilio-in.yaml
     kafkatopic-rvr-telemetry.yaml
     What is guidance/best practice? Should this be dynamic?
 
-Kafka Bridge
+### Create Kafka Bridge
     kafkabridge-rvr-kafka-bridge.yaml
     
-Bridge Route
+### Create Bridge Route
     route-kafka-bridge-route.yaml
 
-    Get the route Host as you will use this for integration 
+### Get the route Host as you will use this for integration 
     oc get route kafka-bridge-route
     
 
-Deploy Kafdrop - https://hub.docker.com/r/obsidiandynamics/kafdrop
+### Deploy Kafdrop - https://hub.docker.com/r/obsidiandynamics/kafdrop
 kafdrop_dc.yaml
 kafdrop_service.yaml
 kafdrop_route.yaml
