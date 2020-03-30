@@ -2,25 +2,19 @@ package com.redhat.geoallen.twilio;
 
 import com.redhat.geoallen.twilio.beans.TwilioMessage;
 import java.lang.String;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.inject.Inject;
 
-import io.reactivex.Flowable;
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
-import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-
-import org.eclipse.microprofile.reactive.messaging.Message;
-import org.eclipse.microprofile.reactive.messaging.Outgoing;
-import io.smallrye.reactive.messaging.kafka.KafkaMessage;
-import kafka.utils.json.JsonObject;
+import javax.annotation.PostConstruct;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.std.ObjectArraySerializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,19 +23,16 @@ import io.vertx.core.Vertx;
 import io.vertx.kafka.client.producer.KafkaProducer;
 import io.vertx.kafka.client.producer.KafkaProducerRecord;
 
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import javax.inject.Inject;
-import org.jboss.resteasy.annotations.*;
-import javax.annotation.PostConstruct;
 
-import javax.enterprise.context.ApplicationScoped;
+import org.jboss.resteasy.annotations.*;
+
 
 /**
- * A JAX-RS interface.  An implementation of this interface must be provided.
+ * JAX-RS implementation that accepts the Twilio url/encoded resquest, bind  to TwilioMessage POJO and then send to Kafka topic as JSON.
  */
 @Path("/message")
-//@ApplicationScoped
+
 public class MessageResource {
 
   @Inject
@@ -53,8 +44,10 @@ public class MessageResource {
   @ConfigProperty(name = "kafka.bootstrap.servers")
     String kafkaBootstrapServer;
 
-    private KafkaProducer<String, String> producer;
+  @ConfigProperty(name = "kafka.twilio.topic")
+    String twilio_in_topic;
 
+    private KafkaProducer<String, String> producer;
 
   @PostConstruct
     void initKafkaClient() {
@@ -67,9 +60,6 @@ public class MessageResource {
         producer = KafkaProducer.create(vertx, config);
     }
 
-
-  
-
   @POST
   @Produces("text/xml")
   @Consumes("application/x-www-form-urlencoded")
@@ -77,11 +67,9 @@ public class MessageResource {
     System.out.println("Twilio Message Received");
     System.out.println(body.getAccountSid());
     sendMessageToKafka(body);
-    String response = "<Response><Message>We got your message, thank you!</Message></Response>";
+    String response = "<Response><Message>Thank You!  We received your message: '" + body.getBody() +"' </Message></Response>";
     return response;
   }
-
-  
 
 
     public void sendMessageToKafka(TwilioMessage twilioMessage) {
@@ -91,7 +79,7 @@ public class MessageResource {
          String jsonKey = objectMapper.writeValueAsString(twilioMessage.getMessageSid());
          System.out.println("Message:" + jsonMessage);
          System.out.println("Key: " + jsonKey);
-          KafkaProducerRecord<String, String> record = KafkaProducerRecord.create("twilio-in",jsonKey, jsonMessage);
+          KafkaProducerRecord<String, String> record = KafkaProducerRecord.create(twilio_in_topic,jsonKey, jsonMessage);
           producer.write(record, done -> System.out.println("Kafka message sent: twilio message - " + twilioMessage.getBody()));
       } catch (Exception e) {
           e.printStackTrace();
