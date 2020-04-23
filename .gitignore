@@ -1,0 +1,3 @@
+# Untrack files and directories
+*/target/classes/*
+.DS_Store
